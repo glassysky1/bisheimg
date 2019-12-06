@@ -238,4 +238,12 @@ const list = document.getElementByTagName('li)//lis是伪数组
 
 + 数据代理：通过一个对象来代理对另一个对象中属性的读写(读/写)
   + 大意:有对象a，b，通过a改变a达到改变b的效果，a代理b，b是a 的子集
-+ 
++ vue数据代理:通过vm对象来代理 data对象中所有的属性的操作
++ 好处:更方便的操作data中的数据
++ 基本的实现流程
+  + 通过Object.defineProperty()给vm添加与 data对象的属性对应的属性描述符
+  + 所有添加的属性都包含getter/setter
+  + getter/setter内部去操作data中对应的属性数据
+
+## 模板解析
+
