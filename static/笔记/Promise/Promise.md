@@ -511,12 +511,245 @@ pending是未确定的
        */
   ````
 
-+ promise异常穿透？
++ promise异常传/穿透？
 
   + 当使用promise的then链式调用时，可以在最后指定失败的回调
   + 当任何操作作出了异常，都会传到最后失败的回调中处理
 
-+ 
+  ```javascript
+    new Promise((resolve, reject) => {
+        //resolve(1)
+        reject(1)
+        //失败的话会找失败的回调函数，如果没有就会一直向下抛，知道找到
+      }).then(
+        value => {
+          console.log('onResolved1()', value);
+          return 2
+        },
+        //系统会指定默认
+        // reason => { throw reason }
+      ).then(
+        value => {
+          console.log('onResolved2()', value);
+          return 3
+        },
+        //return
+        // reason => Promise.reject(reason)
+      ).then(
+        value => {
+          console.log('onResolved3()', value);
+          return 4
+        },
+        // reason => { throw reason }
+      ).catch(reason =>{
+        console.log('onRejecte1()',reason);
+      })
+  
+      /* 
+      onRejecte1() 1
+       */
+  
+  ```
+
+  
+
++ 中间promise？
+
+     + 当使用promise的then链式调用时，在中间中断，不再调出后面的回调函数
+     + 办法：在回调函数中返回一个pending状态的promise对象
+
+     ```javascript
+        new Promise((resolve, reject) => {
+           // resolve(1)
+           reject(1)
+         }).then(
+           value => {
+             console.log('onResolved1()', value);
+             return 2
+           },
+         ).then(
+           value => {
+             console.log('onResolved2()', value);
+             return 3
+           },
+         ).then(
+           value => {
+             console.log('onResolved3()', value);
+             return 4
+           },
+         ).catch(reason =>{
+           console.log('onRejecte1()',reason);
+           return new Promise(()=>{})//返回一个pending的promise，下面就不会执行，中断promise链
+         }).then(
+           value =>{
+             console.log('onResolved3()',value);
+           },
+           reason =>{
+             console.log('onRejected2()',reason);
+             
+           }
+         )
+     
+         /* 
+         onRejecte1() 1
+          */
+     ```
+
+     
 
 # 自定义(手写)Promise
+
+## 定义整体结构
+
+```javascript
+/* 
+自定义Promise函数模块: IIFE
+ */
+//用es5定义模块
+(function (window) {
+  /* 
+  Promise构造函数
+  excutor：执行器函数(同步执行)
+  */
+  function Promise(excutor) {
+
+  }
+
+  /* 
+    Promise原型对象的then()
+    指定成功和失败回调函数
+    返回一个新的promise对象
+    */
+  Promise.prototype.then = function (onResolved, onRejected) {
+
+  }
+
+  /* 
+  Promise原型对象的catch()
+  指定败回调函数
+  返回一个新的promise对象
+  */
+  Promise.prototype.catch = function (onRejected) {
+
+  }
+
+  /* 
+   Promise函数对象resolve方法
+   返回指定结果的成功的promise
+  */
+  Promise.resolve = function (value) {
+
+  }
+
+  /* 
+  Promise函数对象reject方法
+  返回一个指定reason的失败的promise
+  */
+  Promise.reject = function (reason) {
+
+  }
+
+  /* 
+  Promise函数对象all方法
+  返回一promise，只有当所有promise都成功时才成功，否则只有一个失败的就失败
+  */
+  Promise.all = function (promises) {
+
+  }
+
+
+  /* 
+  Promise函数对象race方法
+  返回一个promise，其结果由第一个完成的promise决定
+  */
+  Promise.race = function (promises) {
+
+  }
+
+
+  //向外暴露Promise函数
+  window.Promise = Promise
+})(window)
+```
+
+## 构造函数的实现
+
+```javascript
+ function Promise(excutor) {
+    //将当前promise对象保存起来
+    const self = this
+    //this代表类型，Promise类型
+    self.status = 'pending'//给promise对象指定status属性，初始化为pending
+    self.data = undefined //给promise对象指定一个用于存储结果数据的属性
+    self.callbacks = []//每个元素结构：{ onResolved(){},onRejected(){} }
+    function resolve(value) {
+      //如果当前状态不是pending，直接结束
+      //状态只能改一次
+      if (self.status !== 'pending') {
+        return
+      }
+      //将状态改成resolved
+      self.status = 'resolved'
+      //保存value数据
+      self.data = value
+      //如果有待执行callback函数，立即异步执行回调函数onResolved
+      if (self.callbacks.length > 0) {
+        setTimeout(() => {//放入队列中执行所有成功的回调
+          self.callbacks.forEach(callbacksObj => {
+            callbacksObj.onResolved(value)
+          });
+        });
+      }
+    }
+    function reject(reason) {
+      //如果当前状态不是pending，直接结束
+      //状态只能改一次
+      if (self.status !== 'pending') {
+        return
+      }
+
+      //将状改成rejected
+      self.status = 'rejected'
+      //保存reason数据
+      self.data = reason
+      //如果有待执行callback函数，立即执行异步回调函数onRejected
+      if (self.callbacks.length > 0) {
+        setTimeout(() => {
+          self.callbacks.forEach(callbacksObj => {
+            callbacksObj.onRejected(reason)
+          })
+        });
+      }
+    }
+    //立即同步执行excutor
+    try {
+      excutor(resolve, reject)
+    } catch (error) {//如果执行器 抛出异常，promise对象变为rejected状态
+      reject(error)
+    }
+  }
+
+  /* 
+    Promise原型对象的then()
+    指定成功和失败回调函数
+    返回一个新的promise对象
+    */
+  Promise.prototype.then = function (onResolved, onRejected) {
+    const self= this
+    //假设当前状态是pending状态，将回调函数保存起来
+    self.callbacks.push({
+      onResolved,
+      onRejected
+    })
+  }
+
+  /* 
+  Promise原型对象的catch()
+  指定败回调函数
+  返回一个新的promise对象
+  */
+  Promise.prototype.catch = function (onRejected) {
+
+  }
+```
 
