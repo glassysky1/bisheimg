@@ -753,3 +753,160 @@ pending是未确定的
   }
 ```
 
+index.html
+
+```html
+  <script src="../lib/Promise.js"></script>
+  <script>
+    const p = new Promise((resolve, reject) => {
+      // 现指定回调函数再改变状态,先让回调函数存数据，再读数据
+      setTimeout(() => {
+        // resolve(1)//value
+        reject(2)//reason
+      }, 100);
+    })
+    p.then(
+      value => {
+        console.log('onResolved1()', value);
+      },
+      reason => {
+        console.log('onRejected1()', reason);
+
+      }
+    )
+
+    p.then(
+      value => {
+        console.log('onResolved2()', value);
+      },
+      reason => {
+        console.log('onRejected2()', reason);
+
+      }
+    )
+
+  </script>
+```
+
+## Promise_then的实现1
+
+```javascript
+ /* 
+    Promise原型对象的then()
+    指定成功和失败回调函数
+    返回一个新的promise对象
+    */
+  Promise.prototype.then = function (onResolved, onRejected) {
+    const self = this
+
+    //返回一个新的Promise对象
+    return new Promise((resolve, reject) => {
+      //假设当前状态是pending状态，将回调函数保存起来
+      if (self.status === PENDING) {
+        self.callbacks.push({
+          onResolved,
+          onRejected
+        })
+      } else if (self.status === RESOLVED) {
+        setTimeout(() => {
+          /* 
+          */
+          try {
+            const result = onResolved(self.data)
+            //  2.如果回到函数返回是promise，return的promise结果就是这个promise
+            if (result instanceof Promise) {
+              result.then(
+                //return不return 不重要，只要结果出来了就行了
+                value => resolve(value),//当result成功时，让return的promise也成功
+                reason => reject(reason)///当reject时，让return的promise也成功
+              )
+            } else {
+              // 3.如果回调函数返回不是promise，return的promise就会失败，value就是返回的值
+              resolve(result)
+            }
+          } catch (error) {
+            // 1.如果执行抛出异常，return的promise就会失败，reason就是error
+            reject(error)
+          }
+
+        });
+      } else {//'rejected'
+        setTimeout(() => {
+          onRejected(self.data)
+        });
+      }
+
+    })
+  }
+```
+
+## Promise_then的实现2
+
+简洁代码
+
+```javascript
+ Promise.prototype.then = function (onResolved, onRejected) {
+    const self = this
+
+    //返回一个新的Promise对象
+    return new Promise((resolve, reject) => {
+      //假设当前状态是pending状态，将回调函数保存起来
+      if (self.status === PENDING) {
+        self.callbacks.push({
+          onResolved,
+          onRejected
+        })
+      } else if (self.status === RESOLVED) {
+        setTimeout(() => {
+          /* 
+          */
+          try {
+            const result = onResolved(self.data)
+            //  2.如果回到函数返回是promise，return的promise结果就是这个promise
+            if (result instanceof Promise) {
+              // result.then(
+              //   //return不return 不重要，只要结果出来了就行了
+              //   value => resolve(value),//当result成功时，让return的promise也成功
+              //   reason => reject(reason)///当reject时，让return的promise也成功
+              // )
+              result.then(resolve, reject)
+            } else {
+              // 3.如果回调函数返回不是promise，return的promise就会失败，value就是返回的值
+              resolve(result)
+            }
+          } catch (error) {
+            // 1.如果执行抛出异常，return的promise就会失败，reason就是error
+            reject(error)
+          }
+
+        });
+      } else {//'rejected'
+        setTimeout(() => {
+          /* 
+          */
+          try {
+            const result = onRejected(self.data)
+            //  2.如果回到函数返回是promise，return的promise结果就是这个promise
+            if (result instanceof Promise) {
+              // result.then(
+              //   //return不return 不重要，只要结果出来了就行了
+              //   value => resolve(value),//当result成功时，让return的promise也成功
+              //   reason => reject(reason)///当reject时，让return的promise也成功
+              // )
+              result.then(resolve, reject)
+            } else {
+              // 3.如果回调函数返回不是promise，return的promise就会失败，value就是返回的值
+              resolve(result)
+            }
+          } catch (error) {
+            // 1.如果执行抛出异常，return的promise就会失败，reason就是error
+            reject(error)
+          }
+
+        });
+      }
+
+    })
+  }
+```
+
