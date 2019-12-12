@@ -910,3 +910,116 @@ index.html
   }
 ```
 
+## Promise_then的实现3
+
+promise.js
+
+```javascript
+ Promise.prototype.then = function (onResolved, onRejected) {
+    onResolved = typeof onResolved === 'function' ? onResolved : value =>value//向后传递成功的value
+    //指定默认的失败的回调(实现错误/异常传透的关键点),不能return，否则会进入成功的处理
+    onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }///向后传递失败的reason
+
+    const self = this
+
+    //返回一个新的Promise对象
+    return new Promise((resolve, reject) => {
+      /* 
+      调用指定回调函数处理，根据执行结果，改变return的promise状态
+      */
+      function handle(callback) {
+        try {
+          const result = callback(self.data)
+          //  2.如果回到函数返回是promise，return的promise结果就是这个promise
+          if (result instanceof Promise) {
+            // result.then(
+            //   //return不return 不重要，只要结果出来了就行了
+            //   value => resolve(value),//当result成功时，让return的promise也成功
+            //   reason => reject(reason)///当reject时，让return的promise也成功
+            // )
+            result.then(resolve, reject)
+          } else {
+            // 3.如果回调函数返回不是promise，return的promise就会失败，value就是返回的值
+            resolve(result)
+          }
+        } catch (error) {
+          // 1.如果执行抛出异常，return的promise就会失败，reason就是error
+          reject(error)
+        }
+
+      }
+      //当前状态是pending状态，将回调函数保存起来
+      if (self.status === PENDING) {
+        self.callbacks.push({
+          onResolved() {
+            handle(onResolved)
+          },
+          onRejected() {
+            handle(onRejected)
+          }
+        })
+      } else if (self.status === RESOLVED) {//如果当前是resolved状态，异步执行onResolve并改变return的promise状态
+        //如果是resolved，我就异步处理回调
+        setTimeout(() => {
+          handle(onResolved)
+        });
+      } else {////如果当前是rejected状态，异步执行onRejected并改变return的promise状态
+        setTimeout(() => {
+          handle(onRejected)
+        });
+      }
+
+    })
+  }
+
+  /* 
+  Promise原型对象的catch()
+  指定败回调函数
+  返回一个新的promise对象
+  */
+  Promise.prototype.catch = function (onRejected) {
+    return this.then(undefined,onRejected)
+  }
+
+```
+
+index.html
+
+```javascript
+<script>
+    const p = new Promise((resolve, reject) => {
+        reject(2)//reason
+    }).then(
+      value => {
+        console.log('onResolved1()', value);
+      },
+      reason => {
+        console.log('onRejected1()', reason);
+        // return 3
+        // throw 4
+        return new Promise((resolve,reject)=>reject(5))
+      }
+    ).then(
+      value => {
+        console.log('onResolved2()', value);
+      },
+      reason => {
+        console.log('onRejected2()', reason);
+        //中断Promise链
+        return new Promise(()=>{})
+      }
+    ).catch(reason=>{
+      console.log('onRejected3()',reason);
+      
+    }).then(
+      value => {
+        console.log('onResolved4()', value);
+      },
+      reason => {
+        console.log('onRejected4()', reason);
+      }
+    )
+
+  </script>
+```
+
