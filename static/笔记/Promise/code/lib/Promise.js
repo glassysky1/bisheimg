@@ -69,10 +69,10 @@
   /* 
     Promise原型对象的then()
     指定成功和失败回调函数
-    返回一个新的promise对象
+    返回promise的结果由onResolved/onRejected执行结果决定
     */
   Promise.prototype.then = function (onResolved, onRejected) {
-    onResolved = typeof onResolved === 'function' ? onResolved : value =>value//向后传递成功的value
+    onResolved = typeof onResolved === 'function' ? onResolved : value => value//向后传递成功的value
     //指定默认的失败的回调(实现错误/异常传透的关键点),不能return，否则会进入成功的处理
     onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }///向后传递失败的reason
 
@@ -134,7 +134,7 @@
   返回一个新的promise对象
   */
   Promise.prototype.catch = function (onRejected) {
-    return this.then(undefined,onRejected)
+    return this.then(undefined, onRejected)
   }
 
   /* 
@@ -142,7 +142,15 @@
    返回指定结果的成功的promise
   */
   Promise.resolve = function (value) {
-
+    //返回一个成功/失败的promise
+    return new Promise((resolve, reject) => {
+      //value是promise
+      if (value instanceof Promise) {//使用value的结果作为promise的结果
+        value.then(resolve, reject)
+      } else {//value不是promise => promise变为成功，数据是value
+        resolve(value)
+      }
+    })
   }
 
   /* 
@@ -150,7 +158,10 @@
   返回一个指定reason的失败的promise
   */
   Promise.reject = function (reason) {
-
+    //返回一个失败的promise
+    return new Promise((resolve, reject) => {
+      reject(reason)
+    })
   }
 
   /* 
@@ -158,7 +169,32 @@
   返回一promise，只有当所有promise都成功时才成功，否则只有一个失败的就失败
   */
   Promise.all = function (promises) {
+    //用来保存所有成功value的数组
+    const values = new Array(promises.length)
+    //用来保存成功promise的数量
+    let resolveCount = 0
 
+    //返回一个新的promise
+    return new Promise((resolve, reject) => {
+      //遍历获取每个promise的结果
+      promises.forEach((p, index) => {
+        Promise.resolve(p).then(
+          value => {
+            resolveCount++ //成功的数量加1
+            //p成功，将成功的value保存values
+            values[index] = value
+
+            //如果全部成功了,将return的promise改为成功
+            if (resolveCount === promises.length) {
+              resolve(values)
+            }
+          },
+          reason => {//只要有一个失败了，return的promise就失败
+            reject(reason)
+          }
+        )
+      })
+    })
   }
 
 
@@ -167,10 +203,47 @@
   返回一个promise，其结果由第一个完成的promise决定
   */
   Promise.race = function (promises) {
-
+    //返回一个promise
+    return new Promise((resolve, reject) => {
+      promises.forEach((p, index) => {
+        Promise.resolve(p).then(
+          value => {//一旦有成功了，将return变为成功
+            resolve(value)
+          },
+          reason => {//一旦有失败了，将return 变为失败
+            reject(reason)
+          }
+        )
+      })
+    })
   }
 
+  /* 
+    返回一个promise对象，在指定的时间后才确定结果
+  */
+  Promise.resolveDelay = function (value, time) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (value instanceof Promise) {
+          value.then(resolve, reject)
+        } else {
+          resolve(value)
+        }
+      }, time);
+    })
+  }
 
+  /* 
+  返回一个promise对象，它在指定的时间才会失败
+  */
+  Promise.rejectDelay = function (reason, time) {
+    //返回一个失败的promise
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(reason)
+      }, time);
+    })
+  }
 
   //向外暴露Promise函数
   window.Promise = Promise
