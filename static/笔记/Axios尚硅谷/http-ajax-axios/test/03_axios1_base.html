@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <button onclick="testGet()">GET请求</button>
+    <button onclick="testPost()">POST请求</button>
+    <button onclick="testPut()">PUT请求</button>
+    <button onclick="testDelete()">DELETE请求</button>
+  </div>
+  <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+  <script>
+    //指定默认配置
+    axios.defaults.baseURL = 'http://localhost:3000'
+    function testGet() {
+      // axios.get('http://localhost:3000/posts?id=1')
+      axios({
+        url:'/posts',
+        params:{
+          id:1
+        }
+      })
+        .then((response) => {
+          console.log('/posts', response.data);
+
+        })
+    }
+    function testPost() {
+      // axios.post('/posts', { "title": "json-server", "author": "typicode" })
+      axios({
+        url:'/posts',
+        method:'post',
+        data: { "title": "json-server12", "author": "typicode" }
+      })
+        .then(response => {
+          console.log('/posts post', response);
+
+        },
+        
+        )
+    }
+
+    function testPut() {
+      axios.put('/posts/4', { "title": "json-server3", "author": "typicode3" })
+    }
+    function testDelete(params) {
+      axios.delete('/posts/4')
+    }
+  </script>
+</body>
+
+</html>
