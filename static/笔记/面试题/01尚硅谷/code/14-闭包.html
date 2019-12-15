@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* 
+    理解：什么是闭包
+      1.密闭的容器，类似于set，map容器，存储数据的
+      2.闭包是一个对象，存放数据的格式：key：value
+    形成的条件：
+      1.函数嵌套
+      2.内部函数引用外部函数的局部变量
+    闭包的优点：
+      延长外部函数局部变量的生命周期
+    闭包的缺点：
+      容易造成内存泄漏
+    注意点
+      1.合理的使用闭包
+      2.用完闭包要及时清除(销毁)
+  */
+
+    function fun1() {
+      var count = 1
+      return function () {
+        count ++
+        console.log(count)
+      }
+    }
+    var fun11 = fun1()
+
+    fun11()//2
+    // count存活下来了
+    fun11()//3
+  console.log('----------------------')
+  
+  function fun(n,o) {
+    // var n 
+    // var o
+    console.log(o)
+    return{
+      fun:function(m){
+        // var m 
+        return fun(m,n)
+      }
+    }
+  }
+  var a = fun(0)//undefined
+  a.fun(1)//0
+  a.fun(2)//0
+  a.fun(3)//0
+
+  var b = fun(0).fun(1).fun(2).fun(3).fun(50).fun(22)//undefined,0,1,2,3,50
+  var c = fun(0).fun(1)
+
+  c.fun(2)
+  c.fun(3)//undefined,0,1,1
+
+  </script>
+</body>
+
+</html>
