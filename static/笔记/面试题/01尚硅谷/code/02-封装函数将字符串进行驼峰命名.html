@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    //已知有字符串foo='get-element-by-id',写一个function将其转化为驼峰表示法getELementById
+    function fn(str) {
+      let strArr = str.split('-')
+      let newStr = ''
+      strArr.forEach((str, index) => {
+        if (index !== 0) {
+          newStr += str.charAt(0).toUpperCase() + str.substr(1, str.length - 1)
+        } else {
+          newStr += str
+        }
+      })
+
+      return newStr
+    }
+    console.log(fn('get-element-by-id'))
+
+
+    function fn1(str) {
+      var arr = str.split('-')
+      for (let i = 1;i < arr.length;i++) {
+        arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substr(1, arr[i].length)
+      }
+      console.log(arr.join(''))
+    }
+    fn1('get-element-by-id')
+
+  </script>
+</body>
+
+</html>

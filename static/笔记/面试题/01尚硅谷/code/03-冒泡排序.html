@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let arr = [5, 4, 3, 2, 1]
+    //轮数
+    for (let i = 0;i < arr.length - 1;i++) {
+      //次数
+      for (let j = 0;j < arr.length - 1 - i;j++) {
+        //判断前一个大于后一个数时进行交换
+        if (arr[j] > arr[j + 1]) {
+          //借助第三方变量交换两个变量的值
+          let temp = arr[j]
+          arr[j] = arr[j + 1]
+          arr[j + 1] = temp
+        }
+      }
+    }
+    console.log(arr)
+    
+  </script>
+</body>
+
+</html>

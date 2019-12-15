@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #box {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-bottom: 1px solid #000000;
+    }
+  </style>
+  <!-- 像素比 = 物理像素/css像素 -->
+  <!-- iphone6 -->
+  <!--  2  =  750/375-->
+</head>
+
+<body>
+  <div id="box"></div>
+</body>
+<script>
+  window.onload = function () {
+    //像素比
+    const dpr = window.devicePixelRatio
+    //缩放比例
+    const scale = 1 / dpr
+
+    const width = document.documentElement.clientWidth
+
+    //获取meta标签
+    const metaNode = document.querySelector('meta[name="viewport"]')
+    metaNode.setAttribute('content', `width=device-width, initial-scale=${scale},user-scalable=no`)
+    //页面中的元素宽度，高度，比例反向乘回来
+    const htmlNode = document.querySelector('html')
+    // 1rem等于窗口宽度
+    htmlNode.style.fontSize = width * dpr + 'px'
+  }
+</script>
+
+</html>
