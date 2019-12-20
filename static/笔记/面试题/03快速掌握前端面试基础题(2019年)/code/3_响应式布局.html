@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  响应式布局类型:
+
+  1. c3 media query
+  2. 百分比
+  3. 弹性盒模型
+  4. rem
+
+  点透，元素消失，因为300ms延时会点掉下面的元素
+  <script>
+    ; (function (win) {
+      var doc = win.document
+      var docEl = doc.documentElement
+      var tid
+
+      function refreshRem() {
+        //获取当前屏幕宽度
+        var width = docEl.getBoundingClientRect().width
+        var rem = width / 6.4//将屏幕宽度分成6.4分，1分为1rem
+
+        docEl.style.fontSize = rem + 'px'
+        console.log(0.14 * rem)
+      }
+      //窗口大小改变
+      win.addEventListener('resize', function () {
+        clearTimeout(tid)
+        tid = setTimeout(refreshRem, 10);
+      }, false)
+      //一进来就算
+      win.addEventListener('pageshow', function (e) {
+        if (e.persisted) {
+          clearTimeout(tid)
+          tid = setTimeout(refreshRem, 10);
+        }
+      }, false)
+      refreshRem()
+    })(window)
+  </script>
+
+</body>
+
+</html>

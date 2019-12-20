@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    class Person{
+      constructor(name){
+        this.name = name
+      }
+      say(){
+        console.log(this.name +'say....')
+      }
+      //静态方法子类无法继承
+      static sleep(){
+        console.log(this.name+'sleep....')
+        
+      }
+    }
+
+    class Coder extends Person{
+      constructor(name,age){
+        super(name)
+        this.age = age
+      }
+    }
+
+    var person1 = new Person('zs')
+    person1.say()
+
+    var coder = new Coder('lisi',20)
+   coder.say()
+    
+  </script>
+</body>
+</html>
