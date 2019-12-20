@@ -1,29 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-    #div1{
+    #div1 {
       width: 200px;
       height: 200px;
       background-color: pink;
       /* 延迟三秒 */
       animation: run 2s ease 3s forwards;
     }
-    @keyframes run{
-      0%{
+
+    @keyframes run {
+      0% {
         width: 200px;
       }
-      100%{
+
+      100% {
         width: 800px;
       }
     }
   </style>
 </head>
+
 <body>
   <div id="div1"></div>
+  <script>
+
+    var person = {
+      name: 'zs',
+      age: 20,
+      father:{
+        name:'22'
+      }
+    }
+    var str = JSON.stringify(person)
+    var person2 = JSON.parse(str)
+    person.father.name = 'llist'
+    console.log(person2)
+
+  </script>
 </body>
+
 </html>
