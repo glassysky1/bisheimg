@@ -28,21 +28,63 @@
 </head>
 
 <body>
-  <div id="div1"></div>
+  <!-- <div id="div1"></div> -->
+  <ul>
+    <li class="aa">12 </li>
+    <li class="aa"></li>
+    <li class="aa"></li>
+  </ul>
   <script>
+    // $('#div1').html()
 
-    var person = {
-      name: 'zs',
-      age: 20,
-      father:{
-        name:'22'
+    // //jQuery对象转原生
+    // $('#div1')[0].innerHTML
+    // $('#div1').get(0).innerHTML
+
+    // //原生转成jQuery对象
+    // $(document.getElementById('#div1')).html()
+
+    function $(selector) {
+      return new Jquery(selector)
+    }
+    function Jquery(selector) {
+      //'#div'
+      this.elements = []
+      if (selector.charAt(0) == "#") {
+        this.elements.push(document.getElementById(selector.substr(1)))
+      }
+      if (selector.charAt(0) == '.') {
+        this.elements = document.getElementsByClassName(selector.substr(1))
+      }
+      if (typeof selector == 'function') {
+        //$(fu)的时候即使创建多个，也都执行
+        document.addEventListener('DomContentLoad', selector)
       }
     }
-    var str = JSON.stringify(person)
-    var person2 = JSON.parse(str)
-    person.father.name = 'llist'
-    console.log(person2)
 
+    //Jquery原型加函数
+    Jquery.prototype.css = function (attr, val) {
+      console.log(1)
+
+      if (typeof attr == 'string' && typeof val == 'string') {
+        for (var i = 0;i < this.elements.length;i++) {
+          this.elements[i].style[attr] = val
+        }
+      }
+      return this
+    }
+    Jquery.prototype.on = function (eventName, fn) {
+      for(var i=0;i<this.elements.length;i++){
+        this.elements[i].addEventListener(eventName,fn)
+      }
+      return this
+    }
+
+    // $('#div1')
+    $('.aa').css('background', 'red').css('fontSize', '50px')
+    $('.aa').on('click', function () {
+      console.log('1111')
+    })
   </script>
 </body>
 
