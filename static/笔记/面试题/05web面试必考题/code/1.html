@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /*   function Animal() {
+       this.age = 20 
+      }
+      function Cat() {
+        this.name = 'jacy'
+      }
+      Cat.prototype=new Animal()//这一步让Cat的对象拥有Animal对象的属性，方法
+      var cat = new Cat()
+      console.log(cat.age)
+       */
+    /* 
+       function Animal() {
+         this.age =20
+       }
+       function Cat() {
+         Animal.call(this)//这一步就让Cat的所有对象借用Animal对象的构造函数
+         this.name = 'jacy'
+       }
+       var cat = new Cat()
+       console.log(cat.age) */
+
+    //原型+构造函数组合继承
+    // function Animal() {
+    //   this.age = 20
+    // }
+    // function Cat() {
+    //   this.name = "jacy"
+    //   this.run = function () {
+    //     console.log(this.name, '在跑步')
+    //   }
+    // }
+    // var cat = new Cat()
+
+    // //工厂模式创建对象
+    // function create(age, sex) {
+    //   var obj = {}
+    //   obj.age = age
+    //   obj.sex = sex
+    //   return obj
+    // }
+
+    // var person1 = create('王五', '女')
+
+    // function Japanese(name, language) {
+    //   this.name = name
+    //   this.language = language
+    // }
+    // //寄生模式
+    // function createChinse(name, language) {
+    //   var obj = {}
+    //   Japanese.call(obj, name, language)
+    //   return obj
+    // }
+
+    // var jxc = createChinse('蒋晓聪','中文普通话')
+    // console.log(jxc.constructor)//object
+
+    //动态原型
+    /*     function Person(name, work) {
+          this.name = name
+          if (work) {
+            Person.prototype.working = function () {
+              console.log('我的工作是:' + work)
+    
+            }
+          }
+        }
+    
+        var p1 = new Person("李楠")
+        //拷贝了p1的所有属性(属性值)、方法
+        var p3 = Object.create(p1)
+    
+        function extend(obj) {
+          var result={}
+          for(var prop in obj){
+            result[prop] = obj[prop]
+          }
+          result.construtor=obj.construtor
+          return result
+        } */
+
+    function doSth() {
+      var len = 10
+      //step1这个函数称之为闭包函数
+      //使用这个闭包函数的意义
+      //1.让step1这个函数只能在doSth里面调用，而且又封装了细节
+      //如果说把step1这个函数放在全局作用域中，而且又永远不可能被其他函数调用
+      //那样做是没有意义的，而且污染了全局作用域，占用了内存
+      function step1() {
+        console.log(len)
+
+      }
+    }
+    //闭包的函数另外的意义：可以用来实现模块化
+    var common = (function () {
+      var name = '通用模块'
+      //这是一个初始化页面的方法
+      function initPage() {
+        console.log(name)
+      }
+      return {
+        initPage2: initPage
+      }
+    })()
+    common.initPage2()
+
+    //一个页面由很多li标签，为了实现点击其中一个li标签打印它是第几个
+    var lis = document.querySelectorAll('li')
+    for (var i = 0;i < lis.length;i++) {
+      var li = list[i]
+      //利用闭包函数实现了我们点击某个li标签的时候弹出它的'真实'索引
+      li.onclick = (function (i) {
+        return function () {
+          console.log(i)
+          
+        }
+      })(i)
+    }
+  </script>
+</body>
+
+</html>
