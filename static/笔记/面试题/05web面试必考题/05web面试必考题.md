@@ -762,3 +762,439 @@ Ajax的原理简单说通过XMLHttpRequest对象来向服务器发异步请求�
 
 Math.prototype.fff
 
+## 41.HTTP协议中，GET和POST有什么区别？分别适用于什么场景？
+
+get传送的数据长度有限制，post没有
+
+get通过url传递，在浏览器地址栏可见，post在报文中传递
+
+
+
+通用场景：
+
+post一般用于表单提交
+
+get一般用于简单的数据查询，严格要求不是那么高的场景
+
+## 42.HTTP状态消息200、302、304、403、404、500分别表示什么？
+
+200：请求已成功，请求所希望的响应头或数据体将随此响应返回。
+
+302：请求的资源临时从不同的URL响应请求。由于这样的重定向是临时的，客户端应当继续向地址发送以后的请求。只有在Cache-Control或Expires中进行了指定的情况下，这个响应才可缓存。
+
+304：如果客户端发送了一个带条件的GET请求且该请求已被允许，而文档的内容(自上次访问以来或者根据请求的条件)并没有改变，则服务器应当返回这个状态码。304响应禁止包含消息体，因此始终以消息头后的第一个空行结尾。
+
+403：服务器已经理解请求，但是拒绝执行它
+
+404：请求失败，请求所希望得到的资源未被服务器上发现
+
+500：服务器遇到一个未曾预料的状况，导致了它无法完成请求的处理。一般来说，这个问题都会在服务器端的源代码出现错误时的出现
+
+## 43.HTTP协议中，header信息里面，怎么控制页面失效时间(last-modified,cahe-control,Expires分别代表什么)
+
+| Last-Modified | 文档的最后改动时间。客户可以通过If-Modifed-Since请求头提供一个日期，该请求将视为一个条件GET，只有改动时间迟于指定时间的文档 才会返回，否则返回一个304(Not Modified)状态。Lat-Modified方法来设置 |
+| ------------- | ------------------------------------------------------------ |
+| Expires       | 应该在什么时候认为文档已经过期，从而不再缓存它？             |
+
+## 44.请列举js数组类型中的常用方法
+
+| 方法            | 描述                                                         |
+| --------------- | ------------------------------------------------------------ |
+| concat()        | 连接两个或更多的数组，并返回结果                             |
+| join()          | 把数组的所有元素放入一个字符串。元素通过指定的分隔符进行分割 |
+| pop()           | 删除并返回数组的最后一个元素                                 |
+| push()          | 向数组的末尾添加一个或更多元素，并返回新的长度               |
+| reverse()       | 颠倒数组中元素的顺序                                         |
+| shift()         | 删除并返回数组的第一个元素                                   |
+| slice()         | 从某个已有的数组返回特定的元素                               |
+| sort()          | 对数组的元素进行排序                                         |
+| splice()        | 删除元素，并向数组添加新元素                                 |
+| toSource()      | 返回该对象的源码                                             |
+| toString()      | 把数组的开头添加一个或更多元素，并返回新的长度               |
+| toLocalString() | 把数组转换为本地数组，并返回结果                             |
+| unshift()       | 想数组的开头添加一个或更多元素，并返回新的长度               |
+| valueOf()       | 返回素组对象的原始值                                         |
+## 45.如何获取对象a拥有的所有属性(可枚举的、不可枚举的、不包括继承来的属性)
+
+```javascript
+Object.keys ---IE9+ES5
+//或者
+for(o in obj){
+    if(obj.hasOwnproperty(o)){//判断o不是继承来的属性
+        //把o这个属性放入一个数组中
+    }
+}
+```
+
+## 46.选择题（D)
+
+```javascript
+A:Http状态码302表示暂时性转移 //对
+B.domContentLoaded事件早于onload事件//正确
+	当onload事件触发时，页面上所有的DOM，样式表，脚本，图片，flash都已经加载完成了
+    当DOMContentLoaded事件触发时，仅当DOM加载完成，不包括样式表图片，flash
+    
+C:IE678不支持事件捕获
+```
+
+## 47.js组成部分
+
+ecmascritpt:对js语法发布的一个规范，规定了js语法支持哪些内容
+
+​	es1-3
+
+​	es5:严格模式、Object.create()、Object.defineProperty()、、、、
+
+​	es6:2015年发布的规范版本
+
+
+
+​	变量、数据类型、控制语句、函数等
+
+bom：window、document、history
+
+dom：对一些节点的操作
+
+## 48.写一个post请求并带有发送数据和返回数据的样例
+
+```javascript
+$.ajax({
+    url:'1.html',
+    data:{name:'张三',age:18},//post数据
+    dataType:'json',
+    type:'POST',
+    success:function(data){
+    
+	},
+    error:function(){
+    
+}
+})
+```
+
+## 49.在JavaScript中什么是伪数组？如何将伪数组转换为标准数组？
+
+伪数组(类数组)：无法直接调用方法或期望length属性有什么特殊的行为，但仍可以对真正数组遍历方法来遍历它们，典型的函数的argument参数，还有像调用getElementsByTagName之类的，它们都返回NodeList对象都属于伪数组。
+
+可以使用 Array.prototype.slice.call(fakeArray)将数组转换为真正的Array对象
+
+## 50.正则区号3-4位，第一位是0，中横线，7-8位数字，中横线，3-4位分机号格式的固定号
+
+```javascript
+/0[0-9]{2,3}-\d{7-8}/
+```
+
+## 51.下面的代码会有什么样的输出
+
+```javascript
+      var User = {
+        count :1,
+        getCount:function () {
+          return this.count
+        }
+      }
+      console.log(User.getCount())//1
+      var func = User.getCount
+      console.log(func())//undefined,指向window
+
+
+
+   
+      (function test() {
+      //b是一个隐式的全局变量
+      var a = b = 5
+      console.log(typeof a)
+      console.log(typeof b)
+    })()
+    console.log(typeof a)
+    console.log(typeof b)
+    //number number undefined number
+
+
+
+
+
+
+    var a
+    console.log(a)///undefined
+    var b = a * 0
+    console.log(b)//NaN
+    if (b == b) {
+      console.log(b * 2 + '2' - 0 + 4)
+    } else {
+      console.log(!b * 2 + '2' - 0 + 4)//26
+    }
+    console.log(true*2-0)//2
+
+    /* 
+      考点：乘号运算符的运算规则
+      1.如果其中一个数时NaN，则结果就是NaN
+      2.如果乘积超过了ECMAScript设定的范围，那么就会返回Infinty、-Infinity
+      3.如果参与乘法运算的某个操作数不是数值，js引擎会先调用Number()将这个数变成一个数值类型
+        比如：空字符串就会变成0 布尔值true就会变成1，空数组[]也会变成0，undefined转换结果则变成NaN
+     */
+
+
+
+   var t = 10
+    function test(test) {
+      t = t + test //undefined +10 =NaN
+      console.log(t)
+      var t = 3
+    }
+    test(t)
+    console.log(t)//NaN 10
+
+
+
+
+    var a 
+    var b = a/0
+    if(b==b){//b=infinity
+      console.log(b*2+'2'+4)
+    }else{
+      console.log(!b*2 + '2'+4)
+    }
+    //infinity24
+```
+
+## 52.下列JavaScript代码执行后，运行结果是
+
+```html
+  <button id="btn">点击我</button>
+  <script>
+  var btn = document.getElementById('btn')
+  var handle ={
+    id:'eventHandle',
+    exec:function(){
+      console.log(this.id)
+    }
+  }
+  btn.addEventListener('click',handle.exec)//btn
+  </script>
+```
+
+## 53.下列JavaScript代码执行后，一次打印的结果是
+
+```javascript
+  var obj = {
+      proto: {
+        a: 1,
+        b: 2
+      }
+    }
+    function F(){}
+    F.prototype = obj.proto
+    var f= new F()
+    obj.proto.c=3
+    obj.proto = {a:-1,b:-2}//直接改引用(地址)了，但是F.prototype引用(地址)没变
+    console.log(f.a)//1
+    console.log(f.c)//3
+    delete F.prototype['a']
+    console.log(f.a)//undefined
+    console.log(obj.proto.a)//-1
+    
+```
+
+## 54.给字符串扩展一个兼容所有浏览器的清除前后的空格的方法
+
+```javascript
+    if (!String.prototype.trim) {
+      String.prototype.trim = function () {
+        return this.replace(/^\s+/,'').replace(/\s+$/,'')
+      }
+    }
+```
+
+```javascript
+    function setName() {
+      name = '张三'
+    }
+    setName()
+    console.log(name)//张三
+
+
+
+    var b =2//全局变量，相当于b=2或者window.b=2
+    function test2() {
+      window.b =3
+      console.log(b)
+    }
+
+    test2()//3
+
+
+
+
+   c = 5//声明一个全局变量
+    function test3() {
+      window.c=3
+      console.log(c)//答案：undefined，由于此时的c是一个局部变量c，并且没有被赋值
+      var c 
+      console.log(window.c)//答案：3原因：这里的c就是一个全局变量c
+    }
+    test3()
+
+
+
+
+  var arr = []
+  arr[0] = 'a'
+  arr[1] = 'b'
+  arr[10] = 'c'
+  console.log(arr.length)//1
+  console.log(arr[5])//undefined
+
+
+
+
+   console.log(null==undefined)//true
+   console.log('1'==1)//true,因为会将数字1先转换为字符串1
+   console.log('1'===1) //false，因为数据类型不一致
+
+
+
+
+    parseInt(3.14)//3
+    parseFloat('3asdf')//3
+    parseInt('1,23abdc456')
+    parseInt(true) // 'true'=>NaN
+	//对一个非数字或者一个非字符串进行数据类型转换的时候，会先把这个数据转换为一个字符串类型，然后再转换为数值类型
+  
+
+
+
+
+ //函数声明提前
+  function bar() {
+    return foo
+    foo=10
+    function foo(){}
+  }
+  console.log(typeof bar)//function
+
+
+
+
+  var foo = 1
+  function bar() {
+    foo = 10
+    return
+    function foo(){}//相当于var foo = function(){},整个要变量提升
+  }
+  bar()
+  console.log(foo)//答案：1
+
+
+
+
+  console.log(a)//函数
+  var a = 3
+  function a(){}//相当于 var a = function(){},整个都提升到上面
+  console.log(a)//3
+
+
+
+  //对arguments的操作
+  function foo(a) {
+    arguments[0] = 2
+    console.log(a)//答案：2，因为：a、arguments是度实参的访问 b、通过arguments[i]可以修改指定实参的值
+  }
+  foo(1)
+
+
+
+  function foo(a) {
+    console.log(arguments.length)//3,因为arguments是对实参的访问
+  }
+  foo(1,2,3)
+
+
+
+
+
+// bar()//报错
+  var foo = function bar(name) {
+    console.log('hello'+name)
+    console.log(bar)
+  }
+  foo('world')//'helloworld',函数
+  // console.log(bar)//undefined
+  console.log(foo.toString())//函数
+  bar()//报错，报错就是不执行了
+
+```
+
+## 55.jQuery的slideUp动画，如果目标元素被外部事件驱动，当鼠标快速地连续触发外部元素事件，动画会滞后反复 执行，该如何处理呢？
+
+先top(true,true)后slideUp()
+
+## 56.Ajax是什么？如何创建一个Ajax
+
+​	Ajax并不是一种新的技术，全称是 asynchronous JavaScript and xml，可以说是已有技术的组合，主要用来实现客户端与服务端的异步通信效果，实现页面的局部刷新，早期的浏览器并不能原生支持ajax，可以隐藏帧(iframe)方式变相实现异步效果，后来浏览器提供了对ajax的原生支持。
+
+​	使用ajax原生方式发送请求主要通过XMLHttpRequest(标准浏览器)，ActiveXObject(IE浏览器)对象实现异步通信效果
+
+基本步骤
+
+```javascript
+ var xhr = null//创建对象
+  if(window.XMLHttpRequest){
+    xhr = new XMLHttpRequest()
+  }else{
+    xhr = new ActiveXObject('MicrosoftXMLHTTP')
+  }
+  xhr.open('方式','地址','标志位')//初始化请求
+  xhr.setRequestHeader()//设置http头信息
+  xhr.onreadystatechange = function () {//指定回调函数
+  }
+  xhr.send()//发送请求
+```
+
+## 57.同步和异步的区别？
+
+同步：阻塞的
+
+1. 张三叫李四去吃饭，李四一直忙着不停，张三一直等着，一直忙完两个人一块去吃饭
+2. 浏览器向服务器请求数据，服务器比较忙，浏览器一直等着(页面白屏)，直到服务器返回数据，浏览器才能显示页面
+
+异步：非阻塞的
+
+1. 张三叫李四去吃饭，李四在忙，张三说了一声然后自己吃饭了，李四忙完后自己去吃饭
+2. 浏览器向服务器请求数据，服务器比较忙，浏览器可以自如 干原来的事情(显示页面)，服务器返回数据的时候通知浏览器一声，浏览器把返回的数据渲染到页面，局部更新
+
+## 58.GET和POST的区别，何时使用POST？
+
+GET:一般用于信息获取，使用URL传递参数，对所发送信息的数量也有限制，一般在2000个字符，有的浏览器是8000个字符
+
+POST：一般用于修改服务器的资源，对所发送的信息没有限制
+
+​	在以下情况中，请使用POST请求：
+
+1. ​	无法使用缓存文件(更新服务器上的文件或数据库)
+2. 向服务器发送大量数据（POST没有数据量限制)
+3. 发送包含未知字符的用户输入时，POST比GET更稳定也更可靠
+
+## 59.ajax缺点
+
+1.  ajax不支持浏览器back按钮
+2. 安全问题，ajax暴露了服务器交互的细节
+3. 对搜索引擎的支持比较弱
+4. 破坏了程序的异常机制
+5. 无法跨域请求
+
+60.Http常见的状态码有哪些?分别代表是什么意思？
+
+| 200 OK                    | 客户请求成功                                         |
+| ------------------------- | ---------------------------------------------------- |
+| 400 Bad Request           | 客户端请求有语法错误，不能被服务器所理解             |
+| 403 Forbidden             | 服务器收到请求，但是拒绝提供服务                     |
+| 404 Not Found             | 请求资源不存在，输入流错误的URL                      |
+| 500 Internal Server Error | 服务器发生不可预期的错误                             |
+| 503 Server Unavailable    | 服务器当期不能处理客户端的请求，一段时间可能恢复正常 |
+
+## 60.new操作符具体干了什么？
+
+1. 创建一个空对象，并且this变量引用该对象，同时还继承了该函数的原型
+2. 属性和方法被加入到了this引用的对象中
+3. 新创建的对象由this所引用，并且最后隐式的返回this
