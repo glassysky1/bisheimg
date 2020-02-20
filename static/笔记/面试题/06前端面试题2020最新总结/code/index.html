@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    $(function () {
+      waterFall()
+    })
+    function waterFall() {
+      var box = $('.box')
+      var boxWidth = box.outerWidth()//当前图片的宽度
+      var screenWidth = $(window).width()//整个屏幕的宽度
+      //求出列数
+      var cols = parseInt(screenWidth / boxWidth)
+      //创建数组
+      var heightArr = []
+      //图片遍历循环，除第一排不需要定位，取高度值 其他拍 定位处理
+      $.each(box, function (index, item) {
+        //取出图片的高度
+        var boxHeight = $(item).height()
+        if (index < cols) {//是不是第一排
+          boxHeight[index] = boxHeight//var arr =[],arr[0] = 1,arr[1] =2
+        } else{
+          //最小图片的高度
+          //数组中最小的值 var arr = [100,50,20,200]
+          var minBoxHeight = Math.min(...heightArr)
+          //最小的索引 $.inArray() 用于查找数组中指定值，返回索引(未匹配返回-1)
+          var minBoxIndex = $.inArray(minBoxHeight,heightArr)
+          $(item).css({
+            position:'absolute',
+            left:minBoxIndex*boxWidth +'px',
+            top:minBoxHeight +'px'
+          })
+          //高度追加
+          heightArr[minBoxIndex] = boxHeight
+        }
+      })
+    }
+  </script>
+</body>
+
+</html>
