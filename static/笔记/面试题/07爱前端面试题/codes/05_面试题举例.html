@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+    function getLength() {
+      //上下文是什么实际上在读题的时候，是不知道的，所以千万不要 激动
+      return this.length
+    }
+
+    function foo() {
+      this.length = 1
+      return(function () {
+        var length = 2
+        return {
+          length:function(a,b,c){
+            return this.arr.length
+          }
+        },
+        arr:[1,2,3,4]
+        info:function(){
+          //以this.length作为上下文调用getLength函数
+          return getLength.call(this.length)
+        }
+      })()
+    }
+
+    var  result = foo().info()
+  </script>
+</body>
+</html>

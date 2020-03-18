@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function Foo() {
+      function getName() {
+        alert(1)
+      }
+      return this
+    }
+    Foo.getName = function () {
+      alert(2)
+    }
+
+    Foo.prototype.getName = function () {
+      alert(3)
+    }
+    //定义提升，把函数getName给干掉了
+    var getName = function () {
+      alert(4)
+    }
+
+    //函数优先提升  在最上面
+    function getName() {
+      alert(5)
+    }
+
+    //弹出4
+    getName()
+
+    //规则1：函数直接运行上下文是window对象
+    //相当于window.getName()
+    Foo().getName()
+
+    //考点：原型链查找，对象能够沿原型链，访问自己构造函数prototype上的属性、方法
+    new Foo().getName()//3
+
+    //Foo.getName()不是构造函数，是普通函数，人家就爱用new来调用，脑子有坑，你 管他呢
+    new Foo.getName()//2
+
+
+    //写在原型身上的函数，也不是构造函数，是普通函数
+    new new Foo().getName()//3
+  </script>
+</body>
+</html>

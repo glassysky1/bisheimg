@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function fun1(fn) {
+      //规则3：类数组对象中枚举出函数，然后运行，上下文是这个类数组对象
+      arguments[0](3,4)
+    }
+
+    function fun2() {
+      //fun2函数里面的this居然是fun1的实际参数列表
+      //实参长度是5
+      alert(this.length)
+      alert(arguments.length)//2
+    }
+    fun1(fun2, 5, 6, 7, 8) //弹出5
+
+  </script>
+</body>
+
+</html>
