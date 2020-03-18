@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
   <script>
 
@@ -15,22 +17,27 @@
 
     function foo() {
       this.length = 1
-      return(function () {
+      return (function () {
         var length = 2
         return {
-          length:function(a,b,c){
+          length: function (a, b, c) {
             return this.arr.length
+          },
+          arr: [1, 2, 3, 4],
+          info: function () {
+            //以this.length作为上下文调用getLength函数
+            return getLength.call(this.length)
           }
-        },
-        arr:[1,2,3,4]
-        info:function(){
-          //以this.length作为上下文调用getLength函数
-          return getLength.call(this.length)
         }
       })()
     }
-
-    var  result = foo().info()
+    //foo()用规则1,：圆括号直接打点调用函数，所以上下文是window
+    //对象.info()用规则2:对象打点调用函数，上下文是这个对象
+    //记住：函数的length是形参列表的长度，arguments.length是实参列表的长度
+    //arguments.callee表示函数本身，arguments.callee.length也是形参列表的长度
+    var result = foo().info()
+    alert(result)//3
   </script>
 </body>
+
 </html>

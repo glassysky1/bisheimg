@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+
+    // function fun() {
+    //   var a = 1
+    //   this.a = 2
+    //   function fn() {
+    //     return this.a
+    //   }
+    //   fn.a= 3
+    //   return fn
+    // }
+
+    // alert(fun()())//2
+
+    // function fun() {}
+    // console.log(typeof fun)//function
+    // console.log(fun instanceof Function)//true
+    // console.log(fun instanceof Object)//true
+
+    // var a = 1
+    // var obj = {
+    //   a:2,
+    //   getA:function(){
+    //     return this.a
+    //   }
+    // }
+    // var getA = obj.getA
+    // getA()//1
+
+    // var obj = {
+    //   a:1,
+    //   b:2,
+    //   c:[{
+    //     a:3,
+    //     b:4,
+    //     c:fn
+    //   }]
+    // }
+    // function fun() {
+    //   alert(this.a)
+    // }
+    // var a = 5
+    // abj.c[0].c()//3
+
+    // function getLength() {
+    //   alert(arguments.length)
+    // }
+
+    // var arr = [1,2,3,4,5,6]
+    // //写一条语句弹出6
+
+    // getLength.apply(null,arr)
+    // getLength(...arr)
+
+    var number = 2
+    var obj = {
+      number: 4,
+      fn1: (function () {//立即执行
+        this.number *= 2
+        number = number * 2//变量提升，白写了
+        var number = 3
+        return function () {
+          this.number *= 2
+          number *= 3
+          console.log(number)
+        }
+      })()
+    }
+
+    console.log(number)//4 obj里面的fn1是立即执行函数，把fn1里面执行一遍
+    var fn1 =  obj.fn1
+    fn1()
+    obj.fn1()//9 27闭包
+    console.log(window.number)//8
+    console.log(obj.number)//8
+  </script>
+</body>
+
+</html>
