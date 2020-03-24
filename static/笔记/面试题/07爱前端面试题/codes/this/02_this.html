@@ -7,19 +7,19 @@
 </head>
 <body>
   <script>
-    var obj = {
-      a:3,
-      b:4,
-      fun:(function () {
-        var a = 5
-        return function () {
-          alert(this.a)
-        }
-      })()
-    }
-    var a =7
-    //现在适用规则2：对象打点调用函数。上下文是对象
-    obj.fun()//3
+    // var obj = {
+    //   a:3,
+    //   b:4,
+    //   fun:(function () {
+    //     var a = 5
+    //     return function () {
+    //       alert(this.a)
+    //     }
+    //   })()
+    // }
+    // var a =7
+    // //现在适用规则2：对象打点调用函数。上下文是对象
+    // obj.fun()//3
   </script>
 </body>
 </html>
