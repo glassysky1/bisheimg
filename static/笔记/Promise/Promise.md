@@ -190,7 +190,7 @@ pending是未确定的
 
 ### promise基本流程
 
-![](\iamges\基本流程.png)
+![](iamges\基本流程.png)
 
 ### promise基本使用
 
