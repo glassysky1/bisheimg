@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  //创建实例对象
+  let xhr = new XMLHttpRequest()
+  // 绑定一个回调函数
+  xhr.onreadystatechange = function () {
+    //0 实例方法已经生成，open方法未调用
+    //1.open已调用，但是send未调用
+    //2.send已调用，并且返回了头信息和状态码，但是未返回数据体
+    //3.已开始接受数据体，但是未接受完
+    //4.已经完整的接受了数据体
+    if(xhr.readyState ===4){
+      if(xhr.status ===200){
+        //200 服务器正常
+        //301 永久移动
+        //302 暂时移动
+        //304 未修改
+        //307 暂时重定向
+        //401 未授权
+        //403 禁止访问
+        //404 未发现指定网址
+        //500 服务器错误
+        console.log(xhr.responseText)
+        //默认值为空字符串，当成功大道时候才会拿到正确值
+      }else{
+        console.log(xhr.statusText)
+      }
+    }
+  }
+  xhr.onerror = function () {
+   console.error(xhr.statusText) 
+  }
+  xhr.open('GET',url,true)
+  xhr.send(null)
+
+</script>
+</html>
