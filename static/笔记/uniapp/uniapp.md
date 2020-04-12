@@ -790,5 +790,11 @@ manifest.json下的mp-weixin
 	flex-shrink: 0;
 ```
 
+## 用template包裹
 
+## 固定导航栏
+
+```javascript
+:fixed = true
+```
 
