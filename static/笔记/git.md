@@ -15,10 +15,12 @@ git status//查看状态
 git diff//查看修改什么内容
 git log//查看历史
 git reset --hard HEAD^//回退上一次版本(千万别乱用)
+git reset --hard 版本号，回到指定版本
 
-git checkout -b iwen//创建子分支
+git branch new_branch2//创建分支
+git checkout -b iwen//创建子分支,切换新分支
 git branch *//查看分支
-git checkout master//切换分支
+git checkout master//切换分支//switch
 git merge iwen//子分支合并到主分支，iwen是子分支
 git branch -d iwen //删除子分支
 ```
@@ -45,4 +47,8 @@ git clone (后面写你复制的地址)
 //我用
 git pull
 ```
+
+## 最近的
+
+
 
